@@ -11,7 +11,7 @@ LOG_LEVEL = logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO"))
 JSON_LOGS = os.environ.get("JSON_LOGS", True)
 BIND_HOST = os.environ.get("BIND_HOST", "0.0.0.0")
 BIND_PORT = os.environ.get("BIND_PORT", "8000")
-WORKERS = os.environ.get("WORKERS", 4)
+WORKERS = os.environ.get("WORKERS", 2)
 
 
 class InterceptHandler(logging.Handler):

@@ -9,12 +9,15 @@ COPY pyproject.toml poetry.lock /code/
 RUN poetry config virtualenvs.create false \
     && poetry install --no-dev --no-interaction --no-ansi
 
-COPY main.py /code/
+ENV JSON_LOGS=True \
+    LOG_LEVEL="INFO" \
+    BIND_HOST="0.0.0.0" \
+    BIND_PORT="8000" \
+    WORKERS=2
+
+COPY main.py entrypoint.py /code/
 COPY app /code/app
 
-CMD [ "gunicorn", "main:app", \
-    "-k", "uvicorn.workers.UvicornWorker", \
-    "--bind", "0.0.0.0:8000" \
-]
+CMD ["python", "entrypoint.py"]
 
 EXPOSE 8000
