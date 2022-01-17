@@ -1,6 +1,6 @@
 import os
 from pydantic import BaseSettings
-from dotenv import dotenv_values
+from dotenv import dotenv_values, find_dotenv
 import hvac
 
 
@@ -23,6 +23,17 @@ class Settings(BaseSettings):
         "BITBUCKET_TOKEN": None
     }
 
+    # For container usage
+    def setupEnvironmentVariable(self):
+        envvarConfig = {}
+        for envKey in self.configurations.keys():
+            if envKey == None:
+                if os.getenv(envKey) != None:
+                    envvarConfig[envKey] = os.getenv(envKey)
+                else:
+                    raise Exception("Missing environment variable [%s]" % envKey)
+        return envvarConfig
+
     def setup(self):
 
         usingVault = False
@@ -34,6 +45,7 @@ class Settings(BaseSettings):
             usingVault = True
 
         if usingVault:
+            # For production usage using vault
             client = hvac.Client(
                 url="{}:{}".format(
                     os.getenv("VAULT_ADDR"),
@@ -45,7 +57,10 @@ class Settings(BaseSettings):
                 path=os.getenv("VAULT_CONFIG"),
             )["data"]
         else:
-            loaded_conf = dotenv_values(".env")
+            if find_dotenv(".env") != "": # Check for .env file if available
+                loaded_conf = dotenv_values(".env") # Load .env file for development
+            else:
+                loaded_conf = self.setupEnvironmentVariable()
 
         # Fill avaible configuration dictionary
         for config_key in self.configurations.keys():
