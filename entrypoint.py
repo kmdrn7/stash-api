@@ -8,11 +8,15 @@ from gunicorn.glogging import Logger
 import main as CoreApp
 
 LOG_LEVEL = logging.getLevelName(os.environ.get("LOG_LEVEL", "INFO"))
-JSON_LOGS = os.environ.get("JSON_LOGS", True)
+JSON_LOGS = os.environ.get("JSON_LOGS", "true")
 BIND_HOST = os.environ.get("BIND_HOST", "0.0.0.0")
 BIND_PORT = os.environ.get("BIND_PORT", "8000")
 WORKERS = os.environ.get("WORKERS", 2)
 
+if JSON_LOGS == "true":
+    JSON_LOGS = True
+else:
+    JSON_LOGS = False
 
 class InterceptHandler(logging.Handler):
     def emit(self, record):
