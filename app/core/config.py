@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     def setupEnvironmentVariable(self):
         envvarConfig = {}
         for envKey in self.configurations.keys():
-            if envKey == None:
+            if self.configurations[envKey] == None:
                 if os.getenv(envKey) != None:
                     envvarConfig[envKey] = os.getenv(envKey)
                 else:
@@ -61,6 +61,8 @@ class Settings(BaseSettings):
                 loaded_conf = dotenv_values(".env") # Load .env file for development
             else:
                 loaded_conf = self.setupEnvironmentVariable()
+
+        print(loaded_conf)
 
         # Fill avaible configuration dictionary
         for config_key in self.configurations.keys():
