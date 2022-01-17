@@ -62,8 +62,6 @@ class Settings(BaseSettings):
             else:
                 loaded_conf = self.setupEnvironmentVariable()
 
-        print(loaded_conf)
-
         # Fill avaible configuration dictionary
         for config_key in self.configurations.keys():
             if self.configurations[config_key] is None:
